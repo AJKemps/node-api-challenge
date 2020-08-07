@@ -29,11 +29,50 @@ router.get("/:id", validateProjectID, (req, res) => {
     });
 });
 
+router.post("/", validateProject, (req, res) => {
+  let newProject = req.body;
+
+  Projects.insert(newProject)
+    .then((response) => {
+      res.status(201).json(newProject);
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .json({ error: "there was an issue while creating the project" });
+    });
+});
+
+router.put("/:id", validateProjectID, validateProject, (req, res) => {
+  let newProject = req.body;
+  let requestedProjectID = req.params.id;
+
+  Projects.update(requestedProjectID, newProject)
+    .then((response) => {
+      res.status(201).json(newProject);
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .json({ error: "there was an issue while creating the project" });
+    });
+});
+
+router.delete("/:id", validateProjectID, (req, res) => {});
+
 function validateProject(req, res, next) {
   if (!req.body) {
     return res.status(400).json({ message: "missing user data" });
   } else if (!req.body.name) {
     return res.status(400).json({ message: "missing required name field" });
+  } else if (!req.body.description) {
+    return res
+      .status(400)
+      .json({ message: "missing required description field" });
+  } else if (!req.body.completed) {
+    return res
+      .status(400)
+      .json({ message: "missing required completed field" });
   } else {
     next();
   }
@@ -45,7 +84,7 @@ function validateProjectID(req, res, next) {
   Projects.get(requestedProjectID)
     .then((response) => {
       if (!response) {
-        return res.status(400).json({ message: "invalid user id" });
+        return res.status(400).json({ message: "invalid project id" });
       } else {
         req.user = response;
         next();
