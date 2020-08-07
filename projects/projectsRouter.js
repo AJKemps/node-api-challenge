@@ -34,7 +34,7 @@ router.post("/", validateProject, (req, res) => {
 
   Projects.insert(newProject)
     .then((response) => {
-      res.status(201).json(newProject);
+      res.status(201).json(response);
     })
     .catch((error) => {
       res
