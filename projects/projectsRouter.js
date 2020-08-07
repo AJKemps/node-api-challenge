@@ -44,17 +44,17 @@ router.post("/", validateProject, (req, res) => {
 });
 
 router.put("/:id", validateProjectID, validateProject, (req, res) => {
-  let newProject = req.body;
+  let updatedProject = req.body;
   let requestedProjectID = req.params.id;
 
-  Projects.update(requestedProjectID, newProject)
+  Projects.update(requestedProjectID, updatedProject)
     .then((response) => {
-      res.status(201).json(newProject);
+      res.status(201).json(response);
     })
     .catch((error) => {
       res
         .status(500)
-        .json({ error: "there was an issue while creating the project" });
+        .json({ error: "there was an issue while updating the project" });
     });
 });
 
@@ -76,7 +76,7 @@ router.delete("/:id", validateProjectID, (req, res) => {
     .catch((error) => {
       res
         .status(500)
-        .json({ error: "there was an issue while creating the project" });
+        .json({ error: "there was an issue while deleting the project" });
     });
 });
 
