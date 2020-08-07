@@ -58,7 +58,27 @@ router.put("/:id", validateProjectID, validateProject, (req, res) => {
     });
 });
 
-router.delete("/:id", validateProjectID, (req, res) => {});
+router.delete("/:id", validateProjectID, (req, res) => {
+  let requestedProjectID = req.params.id;
+
+  Projects.remove(requestedProjectID)
+    .then((response) => {
+      if (response === 0) {
+        res.status(500).json({
+          error: `there was an issue while deleting project with ID ${requestedProjectID}`,
+        });
+      } else {
+        res.status(200).json({
+          message: `the project with ID ${requestedProjectID} has been deleted`,
+        });
+      }
+    })
+    .catch((error) => {
+      res
+        .status(500)
+        .json({ error: "there was an issue while creating the project" });
+    });
+});
 
 function validateProject(req, res, next) {
   if (!req.body) {
